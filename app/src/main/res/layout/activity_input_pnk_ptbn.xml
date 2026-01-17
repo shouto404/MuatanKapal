@@ -1,0 +1,63 @@
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:orientation="vertical"
+    android:padding="24dp"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent">
+
+    <TextView
+        android:text="Input Muatan PNK - PTBN"
+        android:textStyle="bold"
+        android:textSize="18sp"
+        android:layout_marginBottom="16dp"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"/>
+
+    <!-- Input Tanggal -->
+    <EditText
+        android:id="@+id/etTanggal"
+        android:hint="Pilih Tanggal"
+        android:focusable="false"
+        android:drawableEnd="@android:drawable/ic_menu_my_calendar"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"/>
+
+    <TextView
+        android:text="Pilih Kendaraan"
+        android:layout_marginTop="20dp"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"/>
+
+    <!-- Spinner Kendaraan -->
+    <Spinner
+        android:id="@+id/spKendaraan"
+        android:layout_marginTop="16dp"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"/>
+
+    <!-- Tombol Tambah -->
+    <Button
+        android:id="@+id/btnTambah"
+        android:text="TAMBAH MUATAN"
+        android:layout_marginTop="24dp"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"/>
+
+    <TableLayout
+        android:id="@+id/tableLayout"
+        android:stretchColumns="*"
+        android:layout_marginTop="24dp"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content">
+
+        <TableRow>
+            <TextView android:text="Tanggal" android:textStyle="bold"/>
+            <TextView android:text="Kendaraan" android:textStyle="bold"/>
+            <TextView android:text="Golongan" android:textStyle="bold"/>
+            <TextView android:text="Harga" android:textStyle="bold"/>
+        </TableRow>
+
+    </TableLayout>
+
+
+
+</LinearLayout>

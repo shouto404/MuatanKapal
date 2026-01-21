@@ -5,7 +5,7 @@
     android:layout_height="match_parent">
 
     <TextView
-        android:text="Input Muatan PNK - PTBN"
+        android:text="Input Muatan PTBN - PNK"
         android:textStyle="bold"
         android:textSize="18sp"
         android:layout_marginBottom="16dp"

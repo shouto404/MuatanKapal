@@ -11,7 +11,7 @@ import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 import java.util.Calendar
 
-class InputPNKPTBNActivity : AppCompatActivity() {
+class InputPTBNPNKActivity : AppCompatActivity() {
 
     private var sisaUpperDeck = 0
     private var sisaLowerDeck = 0
@@ -32,11 +32,11 @@ class InputPNKPTBNActivity : AppCompatActivity() {
     private lateinit var btnResetKapasitas: Button
     private lateinit var btnTambahKendaraan: Button
 
-    private val keyRute = "PNK_PTBN"
+    private val keyRute = "PTBN_PNK"
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        setContentView(R.layout.activity_input_pnk_ptbn)
+        setContentView(R.layout.activity_input_ptbn_pnk)
 
         db = AppDatabase.getInstance(this)
         dao = db.dao()
@@ -51,7 +51,6 @@ class InputPNKPTBNActivity : AppCompatActivity() {
         btnResetKapasitas = findViewById(R.id.btnResetKapasitas)
         btnTambahKendaraan = findViewById(R.id.btnTambahKendaraan)
 
-        // Date Picker
         etTanggal.setOnClickListener {
             val cal = Calendar.getInstance()
             DatePickerDialog(
@@ -63,16 +62,14 @@ class InputPNKPTBNActivity : AppCompatActivity() {
             ).show()
         }
 
-        // Init DB
         lifecycleScope.launch {
-            seedTarifJikaKosong_PNK_PTBN()
+            seedTarifJikaKosong_PTBN_PNK()
             loadTarifKeSpinner()
             loadKapasitas()
             loadMuatan()
             updateTampilanKapasitas()
         }
 
-        // SET KAPASITAS (Lower wajib)
         btnSetKapasitas.setOnClickListener {
             if (etLower.text.isNullOrBlank()) {
                 Toast.makeText(this, "Lower Deck wajib diisi", Toast.LENGTH_SHORT).show()
@@ -110,7 +107,6 @@ class InputPNKPTBNActivity : AppCompatActivity() {
             Toast.makeText(this, "Kapasitas diset: Lower $lower ton, Upper $upper ton", Toast.LENGTH_SHORT).show()
         }
 
-        // HAPUS DATA TABEL (muatan rute ini)
         btnHapusMuatan.setOnClickListener {
             AlertDialog.Builder(this)
                 .setTitle("Hapus Data Tabel")
@@ -118,22 +114,18 @@ class InputPNKPTBNActivity : AppCompatActivity() {
                 .setPositiveButton("YA") { _, _ ->
                     lifecycleScope.launch {
                         withContext(Dispatchers.IO) {
-                            // ✅ ideal (kalau MuatanEntity punya kolom rute)
                             dao.clearMuatanByRute(keyRute)
-
-                            // kalau belum punya per rute, pakai ini:
-                            // dao.clearMuatan()
+                            // kalau belum punya per rute: dao.clearMuatan()
                         }
                         listMuatan.clear()
                         tampilkanTabel()
-                        Toast.makeText(this@InputPNKPTBNActivity, "Data tabel muatan dihapus", Toast.LENGTH_SHORT).show()
+                        Toast.makeText(this@InputPTBNPNKActivity, "Data tabel muatan dihapus", Toast.LENGTH_SHORT).show()
                     }
                 }
                 .setNegativeButton("BATAL", null)
                 .show()
         }
 
-        // RESET KAPASITAS (unlock supaya btn set kapasitas bisa klik lagi)
         btnResetKapasitas.setOnClickListener {
             AlertDialog.Builder(this)
                 .setTitle("Reset Kapasitas")
@@ -154,7 +146,6 @@ class InputPNKPTBNActivity : AppCompatActivity() {
                         updateTampilanKapasitas()
 
                         withContext(Dispatchers.IO) {
-                            // simpan state unlock
                             dao.upsertKapasitas(
                                 KapasitasEntity(
                                     key = keyRute,
@@ -167,17 +158,15 @@ class InputPNKPTBNActivity : AppCompatActivity() {
                             )
                         }
 
-                        Toast.makeText(this@InputPNKPTBNActivity, "Kapasitas di-reset. Silakan set lagi.", Toast.LENGTH_SHORT).show()
+                        Toast.makeText(this@InputPTBNPNKActivity, "Kapasitas di-reset. Silakan set lagi.", Toast.LENGTH_SHORT).show()
                     }
                 }
                 .setNegativeButton("BATAL", null)
                 .show()
         }
 
-        // TAMBAH KENDARAAN (tarif rute ini)
         btnTambahKendaraan.setOnClickListener { showDialogTambahKendaraan() }
 
-        // TAMBAH MUATAN
         btnTambah.setOnClickListener {
             val tanggal = etTanggal.text.toString().trim()
 
@@ -208,20 +197,19 @@ class InputPNKPTBNActivity : AppCompatActivity() {
                 }
 
                 if (tarif == null) {
-                    Toast.makeText(this@InputPNKPTBNActivity, "Tarif tidak ditemukan untuk rute ini", Toast.LENGTH_SHORT).show()
+                    Toast.makeText(this@InputPTBNPNKActivity, "Tarif tidak ditemukan untuk rute ini", Toast.LENGTH_SHORT).show()
                     return@launch
                 }
 
                 val deckTerpilih = pilihDeckSesuaiTarif(tarif.deck, tarif.ton)
                 if (deckTerpilih == null) {
-                    Toast.makeText(this@InputPNKPTBNActivity, "Kapasitas tidak cukup (Lower & Upper penuh)", Toast.LENGTH_SHORT).show()
+                    Toast.makeText(this@InputPTBNPNKActivity, "Kapasitas tidak cukup (Lower & Upper penuh)", Toast.LENGTH_SHORT).show()
                     return@launch
                 }
 
                 if (deckTerpilih == "Lower Deck") sisaLowerDeck -= tarif.ton else sisaUpperDeck -= tarif.ton
 
                 val muatan = MuatanEntity(
-                    // ✅ ideal: tambahkan kolom rute di MuatanEntity
                     rute = keyRute,
                     tanggal = tanggal,
                     kendaraan = tarif.kendaraan,
@@ -255,7 +243,6 @@ class InputPNKPTBNActivity : AppCompatActivity() {
         }
     }
 
-
     private fun pilihDeckSesuaiTarif(deckPrioritas: String, ton: Int): String? {
         return when (deckPrioritas) {
             "Lower Deck" -> when {
@@ -286,7 +273,7 @@ class InputPNKPTBNActivity : AppCompatActivity() {
         }
         val spDeck = Spinner(this).apply {
             adapter = ArrayAdapter(
-                this@InputPNKPTBNActivity,
+                this@InputPTBNPNKActivity,
                 android.R.layout.simple_spinner_dropdown_item,
                 listOf("Lower Deck", "Upper Deck")
             )
@@ -335,14 +322,14 @@ class InputPNKPTBNActivity : AppCompatActivity() {
                         )
                     }
                     loadTarifKeSpinner()
-                    Toast.makeText(this@InputPNKPTBNActivity, "Kendaraan ditambahkan untuk rute $keyRute", Toast.LENGTH_SHORT).show()
+                    Toast.makeText(this@InputPTBNPNKActivity, "Kendaraan ditambahkan untuk rute $keyRute", Toast.LENGTH_SHORT).show()
                 }
             }
             .setNegativeButton("BATAL", null)
             .show()
     }
 
-    private suspend fun seedTarifJikaKosong_PNK_PTBN() {
+    private suspend fun seedTarifJikaKosong_PTBN_PNK() {
         val existing = withContext(Dispatchers.IO) { dao.getAllTarifByRute(keyRute) }
         if (existing.isNotEmpty()) return
 
@@ -354,7 +341,7 @@ class InputPNKPTBNActivity : AppCompatActivity() {
                 golongan = "Gol IV A",
                 ton = 5,
                 deck = "Lower Deck",
-                harga = 3168250
+                harga = 3409550
             ),
             KendaraanTarifEntity(
                 urutan = 2,
@@ -363,7 +350,7 @@ class InputPNKPTBNActivity : AppCompatActivity() {
                 golongan = "Gol IV B",
                 ton = 5,
                 deck = "Lower Deck", // kalau mau default Upper, ganti "Upper Deck"
-                harga = 4066000
+                harga = 4454550
             ),
             KendaraanTarifEntity(
                 urutan = 3,
@@ -372,7 +359,7 @@ class InputPNKPTBNActivity : AppCompatActivity() {
                 golongan = "Gol V A",
                 ton = 10,
                 deck = "Lower Deck", // kalau mau default Upper, ganti "Upper Deck"
-                harga = 5985000
+                harga = 11894475
             ),
             KendaraanTarifEntity(
                 urutan = 4,
@@ -381,7 +368,7 @@ class InputPNKPTBNActivity : AppCompatActivity() {
                 golongan = "Gol V B",
                 ton = 10,
                 deck = "Lower Deck", // kalau mau default Upper, ganti "Upper Deck"
-                harga = 6032500
+                harga = 12236475
             ),
             KendaraanTarifEntity(
                 urutan = 5,
@@ -390,7 +377,7 @@ class InputPNKPTBNActivity : AppCompatActivity() {
                 golongan = "Gol V C",
                 ton = 10,
                 deck = "Lower Deck", // kalau mau default Upper, ganti "Upper Deck"
-                harga = 6270000
+                harga = 12880500
             ),
             KendaraanTarifEntity(
                 urutan = 6,
@@ -399,7 +386,7 @@ class InputPNKPTBNActivity : AppCompatActivity() {
                 golongan = "Gol VI A",
                 ton = 20,
                 deck = "Lower Deck", // kalau mau default Upper, ganti "Upper Deck"
-                harga = 6555000
+                harga = 14245725
             ),
             KendaraanTarifEntity(
                 urutan = 7,
@@ -408,7 +395,7 @@ class InputPNKPTBNActivity : AppCompatActivity() {
                 golongan = "Gol VI B",
                 ton = 20,
                 deck = "Lower Deck", // kalau mau default Upper, ganti "Upper Deck"
-                harga = 6840000
+                harga = 15034367
             ),
             KendaraanTarifEntity(
                 urutan = 8,
@@ -417,7 +404,7 @@ class InputPNKPTBNActivity : AppCompatActivity() {
                 golongan = "Gol VI C",
                 ton = 20,
                 deck = "Lower Deck", // kalau mau default Upper, ganti "Upper Deck"
-                harga = 7125000
+                harga = 17281117
             ),
             KendaraanTarifEntity(
                 urutan = 9,
@@ -426,7 +413,7 @@ class InputPNKPTBNActivity : AppCompatActivity() {
                 golongan = "Gol VII A",
                 ton = 25,
                 deck = "Lower Deck", // kalau mau default Upper, ganti "Upper Deck"
-                harga = 10830000
+                harga = 19788690
             ),
             KendaraanTarifEntity(
                 urutan = 10,
@@ -435,7 +422,7 @@ class InputPNKPTBNActivity : AppCompatActivity() {
                 golongan = "Gol VII B",
                 ton = 25,
                 deck = "Lower Deck", // kalau mau default Upper, ganti "Upper Deck"
-                harga = 11067500
+                harga = 20453690
             ),
             KendaraanTarifEntity(
                 urutan = 11,
@@ -444,7 +431,7 @@ class InputPNKPTBNActivity : AppCompatActivity() {
                 golongan = "Gol VIII",
                 ton = 25,
                 deck = "Lower Deck", // kalau mau default Upper, ganti "Upper Deck"
-                harga = 11590000
+                harga = 37002690
             ),
             KendaraanTarifEntity(
                 urutan = 12,
@@ -453,16 +440,16 @@ class InputPNKPTBNActivity : AppCompatActivity() {
                 golongan = "Gol IV A",
                 ton = 10,
                 deck = "Lower Deck", // kalau mau default Upper, ganti "Upper Deck"
-                harga = 3168250
+                harga = 3979550
             ),
             KendaraanTarifEntity(
                 urutan = 13,
                 rute = keyRute,
                 kendaraan = "MUATAN MOBIL",
-                golongan = "Gol IV A",
+                golongan = "Gol IV B",
                 ton = 10,
                 deck = "Lower Deck", // kalau mau default Upper, ganti "Upper Deck"
-                harga = 4066000
+                harga = 5024550
             ),
             KendaraanTarifEntity(
                 urutan = 14,
@@ -471,7 +458,7 @@ class InputPNKPTBNActivity : AppCompatActivity() {
                 golongan = "Gol V A",
                 ton = 10,
                 deck = "Lower Deck", // kalau mau default Upper, ganti "Upper Deck"
-                harga = 7742500
+                harga = 14048600
             ),
             KendaraanTarifEntity(
                 urutan = 15,
@@ -480,7 +467,7 @@ class InputPNKPTBNActivity : AppCompatActivity() {
                 golongan = "Gol V B",
                 ton = 10,
                 deck = "Lower Deck", // kalau mau default Upper, ganti "Upper Deck"
-                harga = 7885000
+                harga = 14048600
             ),
             KendaraanTarifEntity(
                 urutan = 16,
@@ -489,7 +476,7 @@ class InputPNKPTBNActivity : AppCompatActivity() {
                 golongan = "Gol V C",
                 ton = 10,
                 deck = "Lower Deck", // kalau mau default Upper, ganti "Upper Deck"
-                harga = 8075000
+                harga = 17900850
             ),
             KendaraanTarifEntity(
                 urutan = 17,
@@ -498,7 +485,7 @@ class InputPNKPTBNActivity : AppCompatActivity() {
                 golongan = "Gol VI A",
                 ton = 20,
                 deck = "Lower Deck", // kalau mau default Upper, ganti "Upper Deck"
-                harga = 8132500
+                harga = 17136860
             ),
             KendaraanTarifEntity(
                 urutan = 18,
@@ -507,7 +494,7 @@ class InputPNKPTBNActivity : AppCompatActivity() {
                 golongan = "Gol VI B",
                 ton = 20,
                 deck = "Lower Deck", // kalau mau default Upper, ganti "Upper Deck"
-                harga = 8550000
+                harga = 18756610
             ),
             KendaraanTarifEntity(
                 urutan = 19,
@@ -516,7 +503,7 @@ class InputPNKPTBNActivity : AppCompatActivity() {
                 golongan = "Gol VI C",
                 ton = 20,
                 deck = "Lower Deck", // kalau mau default Upper, ganti "Upper Deck"
-                harga = 9300000
+                harga = 22377250
             ),
             KendaraanTarifEntity(
                 urutan = 20,
@@ -525,7 +512,7 @@ class InputPNKPTBNActivity : AppCompatActivity() {
                 golongan = "Gol VII A",
                 ton = 25,
                 deck = "Lower Deck", // kalau mau default Upper, ganti "Upper Deck"
-                harga = 12587500
+                harga = 24318860
             ),
             KendaraanTarifEntity(
                 urutan = 21,
@@ -534,7 +521,7 @@ class InputPNKPTBNActivity : AppCompatActivity() {
                 golongan = "Gol VII B",
                 ton = 25,
                 deck = "Lower Deck", // kalau mau default Upper, ganti "Upper Deck"
-                harga = 13015000
+                harga = 25545000
             ),
             KendaraanTarifEntity(
                 urutan = 22,
@@ -543,7 +530,7 @@ class InputPNKPTBNActivity : AppCompatActivity() {
                 golongan = "Gol VIII",
                 ton = 25,
                 deck = "Lower Deck", // kalau mau default Upper, ganti "Upper Deck"
-                harga = 16340000
+                harga = 38565250
             )
         )
 
@@ -582,11 +569,8 @@ class InputPNKPTBNActivity : AppCompatActivity() {
 
     private suspend fun loadMuatan() {
         val all = withContext(Dispatchers.IO) {
-            // ✅ ideal (kalau MuatanEntity punya kolom rute)
             dao.getAllMuatanByRute(keyRute)
-
-            // kalau belum punya per rute, pakai ini:
-            // dao.getAllMuatan()
+            // kalau belum punya per rute: dao.getAllMuatan()
         }
         listMuatan.clear()
         listMuatan.addAll(all)

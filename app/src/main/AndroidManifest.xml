@@ -25,6 +25,10 @@
         <activity
             android:name=".InputPNKPTBNActivity"
             android:exported="false" />
+        <activity
+            android:name=".InputPTBNPNKActivity"
+            android:exported="false" />/>
+
     </application>
 
 </manifest>

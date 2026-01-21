@@ -27,8 +27,7 @@ class MainActivity : AppCompatActivity() {
         // (sementara placeholder)
         // ==============================
         btnPTBNPNK.setOnClickListener {
-            val intent = Intent(this, InputPNKPTBNActivity::class.java)
-            // nanti bisa diganti InputPTBNPNKActivity
+            val intent = Intent(this, InputPTBNPNKActivity::class.java)
             startActivity(intent)
         }
     }

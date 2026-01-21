@@ -1,154 +1,155 @@
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    android:orientation="vertical"
-    android:padding="24dp"
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.core.widget.NestedScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
-    android:layout_height="match_parent">
+    android:layout_height="match_parent"
+    android:background="#F8F9FA">
 
-    <TextView
-        android:text="Input Muatan PNK - PTBN"
-        android:textStyle="bold"
-        android:textSize="18sp"
-        android:layout_marginBottom="16dp"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"/>
-
-    <TextView
-        android:text="Kapasitas Kapal"
-        android:textStyle="bold"
-        android:layout_marginTop="12dp"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"/>
-
-    <EditText
-        android:id="@+id/etUpperDeck"
-        android:hint="Kapasitas Upper Deck (ton)"
-        android:inputType="number"
+    <LinearLayout
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"/>
-
-    <EditText
-        android:id="@+id/etLowerDeck"
-        android:hint="Kapasitas Lower Deck (ton)"
-        android:inputType="number"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"/>
-
-    <Button
-        android:id="@+id/btnSetKapasitas"
-        android:text="SET KAPASITAS KAPAL"
-        android:layout_marginTop="8dp"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"/>
-
-    <Button
-        android:id="@+id/btnResetKapasitas"
-        android:text="RESET KAPASITAS"
-        android:layout_marginTop="8dp"
-        android:backgroundTint="#1565C0"
-        android:textColor="@android:color/white"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"/>
-
-    <TextView
-        android:id="@+id/tvSisaUpper"
-        android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="Sisa Upper Deck: 0 ton"
-        android:textSize="16sp"
-        android:textStyle="bold" />
+        android:orientation="vertical"
+        android:padding="20dp">
 
-    <TextView
-        android:id="@+id/tvSisaLower"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="Sisa Lower Deck: 0 ton"
-        android:textSize="16sp"
-        android:textStyle="bold"
-        android:layout_marginBottom="16dp"/>
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Rute : PNK - PTBN"
+            android:textColor="#272343"
+            android:textSize="22sp"
+            android:textStyle="bold"
+            android:layout_marginBottom="20dp"/>
 
-    <!-- Input Tanggal -->
-    <EditText
-        android:id="@+id/etTanggal"
-        android:hint="Pilih Tanggal"
-        android:focusable="false"
-        android:drawableEnd="@android:drawable/ic_menu_my_calendar"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"/>
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            android:weightSum="2"
+            android:layout_marginBottom="20dp">
 
-    <TextView
-        android:text="Pilih Kendaraan"
-        android:layout_marginTop="20dp"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"/>
+            <LinearLayout
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:background="#272343"
+                android:padding="15dp"
+                android:layout_marginEnd="5dp"
+                android:orientation="vertical">
+                <TextView android:id="@+id/tvSisaUpper" android:layout_width="wrap_content" android:layout_height="wrap_content" android:text="Sisa Upper: 0 ton" android:textColor="#FFFFFF" android:textStyle="bold" android:textSize="14sp"/>
+            </LinearLayout>
 
-    <!-- Spinner Kendaraan -->
-    <Spinner
-        android:id="@+id/spKendaraan"
-        android:layout_marginTop="16dp"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"/>
+            <LinearLayout
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:background="#272343"
+                android:padding="15dp"
+                android:layout_marginStart="5dp"
+                android:orientation="vertical">
+                <TextView android:id="@+id/tvSisaLower" android:layout_width="wrap_content" android:layout_height="wrap_content" android:text="Sisa Lower: 0 ton" android:textColor="#FFFFFF" android:textStyle="bold" android:textSize="14sp"/>
+            </LinearLayout>
+        </LinearLayout>
 
-    <!-- Tombol Tambah -->
-    <Button
-        android:id="@+id/btnTambahKendaraan"
-        android:text="TAMBAH KENDARAAN"
-        android:layout_marginTop="12dp"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"/>
-    <Button
-        android:id="@+id/btnTambah"
-        android:text="TAMBAH MUATAN"
-        android:layout_marginTop="24dp"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"/>
+        <EditText
+            android:id="@+id/etUpperDeck"
+            android:layout_width="match_parent"
+            android:layout_height="50dp"
+            android:hint="Kapasitas Upper (ton)"
+            android:inputType="number"
+            android:background="@android:drawable/edit_text"
+            android:layout_marginBottom="8dp"/>
+        <EditText
+            android:id="@+id/etLowerDeck"
+            android:layout_width="match_parent"
+            android:layout_height="50dp"
+            android:hint="Kapasitas Lower (ton)"
+            android:inputType="number"
+            android:background="@android:drawable/edit_text"
+            android:layout_marginBottom="8dp"/>
 
-    <ScrollView
-        android:layout_width="match_parent"
-        android:layout_height="0dp"
-        android:layout_weight="1"
-        android:layout_marginTop="24dp">
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            android:weightSum="2"
+            android:layout_marginBottom="24dp">
+            <Button
+                android:id="@+id/btnSetKapasitas"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:text="SET"
+                android:layout_marginEnd="4dp"
+                android:backgroundTint="#272343"/>
+            <Button
+                android:id="@+id/btnResetKapasitas"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:text="RESET"
+                android:layout_marginStart="4dp"
+                android:backgroundTint="#FF5E5E"/>
+        </LinearLayout>
+
+        <EditText
+            android:id="@+id/etTanggal"
+            android:layout_width="match_parent"
+            android:layout_height="50dp"
+            android:hint="Pilih Tanggal"
+            android:focusable="false"
+            android:background="@android:drawable/edit_text"
+            android:layout_marginBottom="8dp"/>
+
+        <Spinner
+            android:id="@+id/spKendaraan"
+            android:layout_width="match_parent"
+            android:layout_height="55dp"
+            android:layout_marginBottom="12dp"
+            android:background="@android:drawable/btn_dropdown"/>
+
+        <Button
+            android:id="@+id/btnTambah"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="HITUNG &amp; TAMBAH KE TABEL"
+            android:backgroundTint="#272343"
+            android:textColor="#FFFFFF"
+            android:textStyle="bold"
+            android:layout_marginBottom="8dp"/>
+
+        <Button
+            android:id="@+id/btnTambahKendaraan"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="+ TAMBAH KENDARAAN"
+            android:backgroundTint="#FFFFFF"
+            android:textColor="#272343"
+            style="@style/Widget.MaterialComponents.Button.OutlinedButton"
+            android:layout_marginBottom="24dp"/>
 
         <TableLayout
             android:id="@+id/tableLayout"
-            android:stretchColumns="*"
             android:layout_width="match_parent"
-            android:layout_height="wrap_content">
-
-            <TableRow>
-                <TextView
-                    android:text="Tanggal"
-                    android:textStyle="bold"/>
-
-                <TextView
-                    android:text="Kendaraan"
-                    android:textStyle="bold"/>
-
-                <TextView
-                    android:text="Golongan"
-                    android:textStyle="bold"/>
-
-                <TextView
-                    android:text="Deck"
-                    android:textStyle="bold"/>
-
-                <TextView
-                    android:text="Harga"
-                    android:textStyle="bold"/>
+            android:layout_height="wrap_content"
+            android:background="#FFFFFF"
+            android:padding="4dp">
+            <TableRow android:background="#EEEEEE" android:padding="8dp">
+                <TextView android:text="Tgl" android:textStyle="bold" android:layout_weight="1"/>
+                <TextView android:text="Kndrn" android:textStyle="bold" android:layout_weight="1"/>
+                <TextView android:text="Gol" android:textStyle="bold" android:layout_weight="1"/>
+                <TextView android:text="Deck" android:textStyle="bold" android:layout_weight="1"/>
+                <TextView android:text="Harga" android:textStyle="bold" android:layout_weight="1"/>
             </TableRow>
-
         </TableLayout>
 
-    </ScrollView>
+        <Button
+            android:id="@+id/btnHapusMuatan"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="HAPUS SEMUA DATA TABEL"
+            android:backgroundTint="#FF5E5E"
+            android:layout_marginTop="30dp"
+            android:layout_marginBottom="50dp"/>
 
-    <Button
-        android:id="@+id/btnHapusMuatan"
-        android:text="HAPUS DATA TABEL"
-        android:layout_marginTop="12dp"
-        android:backgroundTint="#C62828"
-        android:textColor="@android:color/white"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"/>
-
-
-
-</LinearLayout>
+    </LinearLayout>
+</androidx.core.widget.NestedScrollView>

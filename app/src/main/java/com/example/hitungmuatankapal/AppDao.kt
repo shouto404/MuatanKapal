@@ -50,10 +50,13 @@ interface AppDao {
     @Query("DELETE FROM kendaraan_tarif WHERE rute = :rute")
     suspend fun clearTarifByRute(rute: String)
 
-    @Query("SELECT * FROM muatan WHERE rute = :rute ORDER BY id DESC")
-    suspend fun getAllMuatanByRute(rute: String): List<MuatanEntity>
+//    @Query("SELECT * FROM muatan WHERE rute = :rute ORDER BY id DESC")
+//    suspend fun getAllMuatanByRute(rute: String): List<MuatanEntity>
 
     @Query("DELETE FROM muatan WHERE rute = :rute")
     suspend fun clearMuatanByRute(rute: String)
+
+    @Query("SELECT * FROM muatan WHERE rute = :rute ORDER BY id ASC")
+    suspend fun getAllMuatanByRute(rute: String): List<MuatanEntity>
 
 }

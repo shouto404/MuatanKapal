@@ -127,6 +127,15 @@
             style="@style/Widget.MaterialComponents.Button.OutlinedButton"
             android:layout_marginBottom="24dp"/>
 
+        <Button
+            android:id="@+id/btnExportCsv"
+            android:text="EXPORT EXCEL"
+            android:layout_marginTop="12dp"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:textColor="#33272a"
+            android:backgroundTint="#c3f0ca"/>
+
         <TableLayout
             android:id="@+id/tableLayout"
             android:layout_width="match_parent"

@@ -40,6 +40,21 @@ android {
     buildFeatures {
         compose = true
     }
+    android {
+        packaging {
+            resources {
+                excludes.addAll(
+                    listOf(
+                        "META-INF/DEPENDENCIES",
+                        "META-INF/NOTICE",
+                        "META-INF/LICENSE",
+                        "META-INF/LICENSE.txt",
+                        "META-INF/NOTICE.txt"
+                    )
+                )
+            }
+        }
+    }
 }
 
 dependencies {
@@ -60,7 +75,6 @@ dependencies {
     implementation("androidx.constraintlayout:constraintlayout:2.1.4")
     kapt("androidx.room:room-compiler:2.6.1")
     implementation("androidx.room:room-ktx:2.6.1")
-
     // Coroutine (biasanya sudah ada)
     implementation("org.jetbrains.kotlinx:kotlinx-coroutines-android:1.8.1")
     testImplementation(libs.junit)

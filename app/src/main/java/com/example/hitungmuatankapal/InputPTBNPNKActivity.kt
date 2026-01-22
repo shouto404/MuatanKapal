@@ -10,6 +10,12 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 import java.util.Calendar
+import android.content.ContentValues
+import android.os.Environment
+import android.provider.MediaStore
+import java.text.SimpleDateFormat
+import java.util.Date
+import java.util.Locale
 
 class InputPTBNPNKActivity : AppCompatActivity() {
 
@@ -31,7 +37,7 @@ class InputPTBNPNKActivity : AppCompatActivity() {
     private lateinit var btnHapusMuatan: Button
     private lateinit var btnResetKapasitas: Button
     private lateinit var btnTambahKendaraan: Button
-
+    private lateinit var btnExportCsv: Button
     private val keyRute = "PTBN_PNK"
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -50,6 +56,7 @@ class InputPTBNPNKActivity : AppCompatActivity() {
         btnHapusMuatan = findViewById(R.id.btnHapusMuatan)
         btnResetKapasitas = findViewById(R.id.btnResetKapasitas)
         btnTambahKendaraan = findViewById(R.id.btnTambahKendaraan)
+        btnExportCsv = findViewById<Button>(R.id.btnExportCsv)
 
         etTanggal.setOnClickListener {
             val cal = Calendar.getInstance()
@@ -124,6 +131,32 @@ class InputPTBNPNKActivity : AppCompatActivity() {
                 }
                 .setNegativeButton("BATAL", null)
                 .show()
+        }
+
+        btnExportCsv.setOnClickListener {
+            lifecycleScope.launch {
+                val data = withContext(Dispatchers.IO) {
+                    dao.getAllMuatanByRute(keyRute)
+                }
+
+                if (data.isEmpty()) {
+                    Toast.makeText(this@InputPTBNPNKActivity, "Data masih kosong", Toast.LENGTH_SHORT).show()
+                    return@launch
+                }
+
+                val success = withContext(Dispatchers.IO) {
+                    exportMuatanToCsv(
+                        rute = keyRute,
+                        muatan = data
+                    )
+                }
+
+                if (success) {
+                    Toast.makeText(this@InputPTBNPNKActivity, "CSV tersimpan di Downloads", Toast.LENGTH_SHORT).show()
+                } else {
+                    Toast.makeText(this@InputPTBNPNKActivity, "Gagal export CSV", Toast.LENGTH_SHORT).show()
+                }
+            }
         }
 
         btnResetKapasitas.setOnClickListener {
@@ -256,6 +289,63 @@ class InputPTBNPNKActivity : AppCompatActivity() {
                 else -> null
             }
             else -> null
+        }
+    }
+
+    private fun exportMuatanToCsv(
+        rute: String,
+        muatan: List<MuatanEntity>
+    ): Boolean {
+        return try {
+            val timeStamp = SimpleDateFormat("yyyyMMdd_HHmmss", Locale.getDefault()).format(Date())
+            val fileName = "Muatan_${rute}_$timeStamp.csv"
+
+            fun esc(value: String): String {
+                // CSV escape
+                val v = value.replace("\"", "\"\"")
+                return "\"$v\""
+            }
+
+            val csv = buildString {
+                // HEADER (sesuai tabel aplikasi)
+                append("Tanggal,Kendaraan,Golongan,Deck,Ton,Harga\n")
+
+                // DATA
+                for (m in muatan) {
+                    append(
+                        listOf(
+                            esc(m.tanggal),
+                            esc(m.kendaraan),
+                            esc(m.golongan),
+                            esc(m.deck),
+                            m.ton.toString(),
+                            m.harga.toString()
+                        ).joinToString(",")
+                    )
+                    append("\n")
+                }
+            }
+
+            val resolver = contentResolver
+            val values = ContentValues().apply {
+                put(MediaStore.MediaColumns.DISPLAY_NAME, fileName)
+                put(MediaStore.MediaColumns.MIME_TYPE, "text/csv")
+                put(MediaStore.MediaColumns.RELATIVE_PATH, Environment.DIRECTORY_DOWNLOADS)
+            }
+
+            val uri = resolver.insert(MediaStore.Downloads.EXTERNAL_CONTENT_URI, values)
+                ?: return false
+
+            resolver.openOutputStream(uri).use { out ->
+                if (out == null) return false
+                out.write(csv.toByteArray(Charsets.UTF_8))
+                out.flush()
+            }
+
+            true
+        } catch (e: Exception) {
+            e.printStackTrace()
+            false
         }
     }
 
